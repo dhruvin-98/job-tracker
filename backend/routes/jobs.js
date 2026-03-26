@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Job = require('../models/Job');
+const auth = require('../middleware/auth');
+
 
 // GET all jobs
 router.get('/', async (req, res) => {
