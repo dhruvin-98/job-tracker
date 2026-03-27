@@ -7,6 +7,9 @@ function Dashboard() {
   const [jobs, setJobs] = useState([]);
   const [form, setForm] = useState({ company: '', role: '', status: 'Applied', notes: '' });
   const [showForm, setShowForm] = useState(false);
+  const [filterStatus, setFilterStatus] = useState('All');
+const [searchQuery, setSearchQuery] = useState('');
+
   const name = localStorage.getItem('name');
   const navigate = useNavigate();
 
@@ -63,6 +66,13 @@ function Dashboard() {
     navigate('/login');
   };
 
+  const filteredJobs = jobs
+  .filter(job => filterStatus === 'All' || job.status === filterStatus)
+  .filter(job =>
+    job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    job.role.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div style={styles.container}>
 
@@ -92,6 +102,33 @@ function Dashboard() {
         </button>
       </div>
 
+
+      {/* Search and Filter */}
+      <div style={styles.searchFilterRow}>
+        <input
+          style={styles.searchInput}
+          type="text"
+          placeholder="Search by company or role..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <div style={styles.filterButtons}>
+          {['All', 'Applied', 'Interview', 'Offer', 'Rejected'].map(status => (
+            <button
+              key={status}
+              style={{
+                ...styles.filterBtn,
+                backgroundColor: filterStatus === status ? '#4f46e5' : '#fff',
+                color: filterStatus === status ? '#fff' : '#333'
+              }}
+              onClick={() => setFilterStatus(status)}
+            >
+              {status}
+            </button>
+          ))}
+        </div>
+      </div> 
+
       {/* Add Job Form */}
       {showForm && (
         <div style={styles.formBox}>
@@ -112,9 +149,9 @@ function Dashboard() {
 
       {/* Job Cards */}
       <div style={styles.jobList}>
-        {jobs.length === 0
+        {filteredJobs.length === 0
           ? <p style={styles.empty}>No jobs added yet. Click "+ Add Job" to start.</p>
-          : jobs.map(job => (
+          : filteredJobs.map(job => (
             <JobCard
               key={job._id}
               job={job}
@@ -143,7 +180,12 @@ const styles = {
   formBox: { backgroundColor: '#fff', margin: '16px 32px', padding: '24px', borderRadius: '8px', boxShadow: '0 2px 6px rgba(0,0,0,0.1)' },
   input: { width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px' },
   jobList: { padding: '16px 32px' },
-  empty: { textAlign: 'center', color: '#888', marginTop: '40px' }
+  empty: { textAlign: 'center', color: '#888', marginTop: '40px' },
+  searchFilterRow: { display: 'flex', flexDirection: 'column', gap: '12px', padding: '16px 32px' },
+searchInput: { padding: '10px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px', width: '100%' },
+filterButtons: { display: 'flex', gap: '8px', flexWrap: 'wrap' },
+filterBtn: { padding: '8px 16px', borderRadius: '20px', border: '1px solid #ddd', cursor: 'pointer', fontSize: '13px' },
+  
 };
 
 export default Dashboard;
