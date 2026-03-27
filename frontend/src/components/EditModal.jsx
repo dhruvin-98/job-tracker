@@ -5,7 +5,8 @@ function EditModal({ job, onClose, onSave }) {
     company: job.company,
     role: job.role,
     status: job.status,
-    notes: job.notes || ''
+    notes: job.notes || '',
+    deadlinwe: job.deadline ? job.deadline.split('T')[0] : '' // Format date for input
   });
 
   const handleChange = (e) => {
@@ -61,6 +62,14 @@ function EditModal({ job, onClose, onSave }) {
             value={form.notes}
             onChange={handleChange}
           />
+          <label style={styles.label}>Follow-up Deadline (optional)</label>
+            <input
+              style={styles.input}
+              type="date"
+              name="deadline"
+              value={form.deadline}
+              onChange={handleChange}
+            />
           <div style={styles.btnRow}>
             <button type="button" style={styles.cancelBtn} onClick={onClose}>Cancel</button>
             <button type="submit" style={styles.saveBtn}>Save Changes</button>

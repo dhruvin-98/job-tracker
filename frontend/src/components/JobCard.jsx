@@ -22,6 +22,15 @@ function JobCard({ job, onDelete, onStatusUpdate ,onEdit}) {
 
       <p style={styles.date}>Applied: {new Date(job.dateApplied).toLocaleDateString()}</p>
 
+{job.deadline && (
+  <p style={{
+    ...styles.date,
+    color: new Date(job.deadline) < new Date() ? '#ef4444' : '#f59e0b',
+    fontWeight: 'bold'
+  }}>
+    Follow-up by: {new Date(job.deadline).toLocaleDateString()}
+  </p>
+)}
       <div style={styles.actions}>
         <select
           style={styles.select}

@@ -21,6 +21,10 @@ const jobSchema = new mongoose.Schema({
   notes: {
     type: String,
     default: ''
+  },
+  deadline: {
+    type: Date,
+    default: null
   }
 });
 

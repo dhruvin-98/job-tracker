@@ -6,7 +6,7 @@ import EditModal from '../components/EditModal';
 
 function Dashboard() {
   const [jobs, setJobs] = useState([]);
-  const [form, setForm] = useState({ company: '', role: '', status: 'Applied', notes: '' });
+  const [form, setForm] = useState({ company: '', role: '', status: 'Applied', notes: '',deadline: '' });
   const [showForm, setShowForm] = useState(false);
   const [filterStatus, setFilterStatus] = useState('All');
 const [searchQuery, setSearchQuery] = useState('');
@@ -152,6 +152,16 @@ const [editingJob, setEditingJob] = useState(null);
               <option>Rejected</option>
             </select>
             <textarea style={styles.input} name="notes" placeholder="Notes (optional)" value={form.notes} onChange={handleChange} />
+
+             <label style={{ fontSize: '13px', color: '#555' }}>Follow-up Deadline (optional)</label>
+              <input
+                style={{ ...styles.input, marginTop: '4px' }}
+                type="date"
+                name="deadline"
+                value={form.deadline}
+                onChange={handleChange}
+              />
+
             <button style={styles.addBtn} type="submit">Save Job</button>
           </form>
         </div>
