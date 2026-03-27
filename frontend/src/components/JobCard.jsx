@@ -5,7 +5,7 @@ const statusColors = {
   Rejected: '#ef4444'
 };
 
-function JobCard({ job, onDelete, onStatusUpdate }) {
+function JobCard({ job, onDelete, onStatusUpdate ,onEdit}) {
   return (
     <div style={styles.card}>
       <div style={styles.top}>
@@ -33,7 +33,12 @@ function JobCard({ job, onDelete, onStatusUpdate }) {
           <option>Offer</option>
           <option>Rejected</option>
         </select>
-        <button style={styles.deleteBtn} onClick={() => onDelete(job._id)}>Delete</button>
+        <button style={styles.editBtn} onClick={() => onEdit(job._id)}>
+          Edit
+        </button>
+        <button style={styles.deleteBtn} onClick={() => onDelete(job._id)}>
+          Delete
+        </button>
       </div>
     </div>
   );
@@ -49,7 +54,12 @@ const styles = {
   date: { color: '#999', fontSize: '12px', marginBottom: '12px' },
   actions: { display: 'flex', gap: '12px', alignItems: 'center' },
   select: { padding: '6px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px' },
-  deleteBtn: { padding: '6px 14px', backgroundColor: '#ef4444', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px' }
+  deleteBtn: { padding: '6px 14px', backgroundColor: '#ef4444', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px' },
+  editBtn: {
+  padding: '6px 14px', backgroundColor: '#4f46e5',
+  color: '#fff', border: 'none', borderRadius: '6px',
+  cursor: 'pointer', fontSize: '14px'
+},
 };
 
 export default JobCard;

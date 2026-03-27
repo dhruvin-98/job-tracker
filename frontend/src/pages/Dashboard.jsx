@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import API from '../api';
 import JobCard from '../components/JobCard';
 import { useNavigate } from 'react-router-dom';
+import EditModal from '../components/EditModal';
 
 function Dashboard() {
   const [jobs, setJobs] = useState([]);
@@ -9,6 +10,7 @@ function Dashboard() {
   const [showForm, setShowForm] = useState(false);
   const [filterStatus, setFilterStatus] = useState('All');
 const [searchQuery, setSearchQuery] = useState('');
+const [editingJob, setEditingJob] = useState(null);
 
   const name = localStorage.getItem('name');
   const navigate = useNavigate();
@@ -22,6 +24,14 @@ const [searchQuery, setSearchQuery] = useState('');
     }
   };
 
+  const handleEdit = async (id, updatedData) => {
+  try {
+    await API.put(`/jobs/${id}`, updatedData);
+    fetchJobs();
+  } catch (err) {
+    console.log(err);
+  }
+  };
   useEffect(() => {
     fetchJobs();
   }, []);
@@ -157,11 +167,18 @@ const [searchQuery, setSearchQuery] = useState('');
               job={job}
               onDelete={handleDelete}
               onStatusUpdate={handleStatusUpdate}
+              onEdit={() => setEditingJob(job)}
             />
           ))
         }
       </div>
-
+    {editingJob && (
+      <EditModal
+        job={editingJob}
+        onClose={() => setEditingJob(null)}
+        onSave={handleEdit}
+      />
+    )}
     </div>
   );
 }
