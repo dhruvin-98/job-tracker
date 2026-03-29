@@ -31,6 +31,14 @@ function JobCard({ job, onDelete, onStatusUpdate ,onEdit}) {
     Follow-up by: {new Date(job.deadline).toLocaleDateString()}
   </p>
 )}
+{job.source && (
+  <p style={styles.date}>
+    Via: {job.sourceLink
+      ? <a href={job.sourceLink} target="_blank" rel="noreferrer" style={{ color: '#4f46e5' }}>{job.source}</a>
+      : job.source
+    }
+  </p>
+)}
       <div style={styles.actions}>
         <select
           style={styles.select}

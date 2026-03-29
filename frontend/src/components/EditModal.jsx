@@ -6,7 +6,9 @@ function EditModal({ job, onClose, onSave }) {
     role: job.role,
     status: job.status,
     notes: job.notes || '',
-    deadlinwe: job.deadline ? job.deadline.split('T')[0] : '' // Format date for input
+    deadlinwe: job.deadline ? job.deadline.split('T')[0] : '',
+    source: job.source || '',
+    sourceLink: job.sourceLink || ''
   });
 
   const handleChange = (e) => {
@@ -70,6 +72,30 @@ function EditModal({ job, onClose, onSave }) {
               value={form.deadline}
               onChange={handleChange}
             />
+
+          <label style={styles.label}>Where did you apply?</label>
+              <select style={styles.input} name="source" value={form.source} onChange={handleChange}>
+                <option value="">-- Select source --</option>
+                <option>LinkedIn</option>
+                <option>Indeed</option>
+                <option>Glassdoor</option>
+                <option>Naukri</option>
+                <option>Company Website</option>
+                <option>Referral</option>
+                <option>Other</option>
+              </select>
+
+              <label style={styles.label}>Job posting link (optional)</label>
+              <input
+                style={styles.input}
+                type="url"
+                name="sourceLink"
+                placeholder="https://..."
+                value={form.sourceLink}
+                onChange={handleChange}
+              />
+
+
           <div style={styles.btnRow}>
             <button type="button" style={styles.cancelBtn} onClick={onClose}>Cancel</button>
             <button type="submit" style={styles.saveBtn}>Save Changes</button>

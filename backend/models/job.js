@@ -25,7 +25,16 @@ const jobSchema = new mongoose.Schema({
   deadline: {
     type: Date,
     default: null
-  }
+  },
+  source: { 
+    type: String, 
+    default: '' 
+    
+  },
+  sourceLink: { 
+    type: String, 
+    default: ''
+   },
 });
 
 module.exports = mongoose.model('Job', jobSchema);

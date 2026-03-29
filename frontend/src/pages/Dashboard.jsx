@@ -6,7 +6,7 @@ import EditModal from '../components/EditModal';
 
 function Dashboard() {
   const [jobs, setJobs] = useState([]);
-  const [form, setForm] = useState({ company: '', role: '', status: 'Applied', notes: '',deadline: '' });
+  const [form, setForm] = useState({ company: '', role: '', status: 'Applied', notes: '',deadline: '', source: '', sourceLink: '' });
   const [showForm, setShowForm] = useState(false);
   const [filterStatus, setFilterStatus] = useState('All');
 const [searchQuery, setSearchQuery] = useState('');
@@ -33,7 +33,10 @@ const [editingJob, setEditingJob] = useState(null);
   }
   };
   useEffect(() => {
-    fetchJobs();
+    const timer = setTimeout(() => {
+      fetchJobs();
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleChange = (e) => {
@@ -161,6 +164,27 @@ const [editingJob, setEditingJob] = useState(null);
                 value={form.deadline}
                 onChange={handleChange}
               />
+
+            <select style={styles.input} name="source" value={form.source} onChange={handleChange}>
+                <option value="">-- Where did you apply? --</option>
+                <option>LinkedIn</option>
+                <option>Indeed</option>
+                <option>Glassdoor</option>
+                <option>Naukri</option>
+                <option>Company Website</option>
+                <option>Referral</option>
+                <option>Other</option>
+            </select>
+
+              <input
+                style={styles.input}
+                type="url"
+                name="sourceLink"
+                placeholder="Job posting link (optional)"
+                value={form.sourceLink}
+                onChange={handleChange}
+              />
+
 
             <button style={styles.addBtn} type="submit">Save Job</button>
           </form>
