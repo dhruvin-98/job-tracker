@@ -42,16 +42,27 @@ function JobCard({ job, onDelete, onStatusUpdate ,onEdit , onResumeUpload }) {
 
 
 {/* Resume Upload */}
-<div style={{ marginTop: '12px' }}>
+<div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '12px' }}>
   {job.resume ? (
-  <a
-      href={`http://localhost:5000/uploads/${job.resume}`}
-      target="_blank"
-      rel="noreferrer"
-      style={{ color: '#4f46e5', fontSize: '14px' }}
-    >
-      📄 View Resume
-    </a>
+    <>
+      <a
+        href={`http://localhost:5000/uploads/${job.resume}`}
+        target="_blank"
+        rel="noreferrer"
+        style={{ color: '#4f46e5', fontSize: '14px' }}
+      >
+        📄 View Resume
+      </a>
+      <label style={{ cursor: 'pointer', color: '#888', fontSize: '13px' }}>
+        (Change)
+        <input
+          type="file"
+          accept="application/pdf"
+          style={{ display: 'none' }}
+          onChange={(e) => onResumeUpload(job._id, e.target.files[0])}
+        />
+      </label>
+    </>
   ) : (
     <label style={{ cursor: 'pointer', color: '#4f46e5', fontSize: '14px' }}>
       📎 Attach Resume (PDF)
