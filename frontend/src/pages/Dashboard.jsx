@@ -73,6 +73,21 @@ const [editingJob, setEditingJob] = useState(null);
     }
   };
 
+  const handleResumeUpload = async (id, file) => {
+  const formData = new FormData();
+  formData.append('resume', file);
+  try {
+    await API.post(`/jobs/${id}/resume`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    fetchJobs();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('name');
@@ -202,6 +217,7 @@ const [editingJob, setEditingJob] = useState(null);
               onDelete={handleDelete}
               onStatusUpdate={handleStatusUpdate}
               onEdit={() => setEditingJob(job)}
+              onResumeUpload={handleResumeUpload}
             />
           ))
         }

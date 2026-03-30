@@ -35,6 +35,10 @@ const jobSchema = new mongoose.Schema({
     type: String, 
     default: ''
    },
+     resume: {
+    type: String, 
+    default: '' 
+   },
 });
 
 module.exports = mongoose.model('Job', jobSchema);

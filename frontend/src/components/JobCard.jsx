@@ -5,7 +5,7 @@ const statusColors = {
   Rejected: '#ef4444'
 };
 
-function JobCard({ job, onDelete, onStatusUpdate ,onEdit}) {
+function JobCard({ job, onDelete, onStatusUpdate ,onEdit , onResumeUpload }) {
   return (
     <div style={styles.card}>
       <div style={styles.top}>
@@ -39,6 +39,32 @@ function JobCard({ job, onDelete, onStatusUpdate ,onEdit}) {
     }
   </p>
 )}
+
+
+{/* Resume Upload */}
+<div style={{ marginTop: '12px' }}>
+  {job.resume ? (
+  <a
+      href={`http://localhost:5000/uploads/${job.resume}`}
+      target="_blank"
+      rel="noreferrer"
+      style={{ color: '#4f46e5', fontSize: '14px' }}
+    >
+      📄 View Resume
+    </a>
+  ) : (
+    <label style={{ cursor: 'pointer', color: '#4f46e5', fontSize: '14px' }}>
+      📎 Attach Resume (PDF)
+      <input
+        type="file"
+        accept="application/pdf"
+        style={{ display: 'none' }}
+        onChange={(e) => onResumeUpload(job._id, e.target.files[0])}
+      />
+    </label>
+  )}
+</div>
+
       <div style={styles.actions}>
         <select
           style={styles.select}
@@ -59,6 +85,8 @@ function JobCard({ job, onDelete, onStatusUpdate ,onEdit}) {
       </div>
     </div>
   );
+
+  
 }
 
 const styles = {
