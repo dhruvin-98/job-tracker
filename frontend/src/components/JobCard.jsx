@@ -51,7 +51,7 @@ function JobCard({ job, onDelete, onStatusUpdate ,onEdit , onResumeUpload }) {
         rel="noreferrer"
         style={{ color: '#4f46e5', fontSize: '14px' }}
       >
-        📄 View Resume
+        📄 View your  Resume
       </a>
       <label style={{ cursor: 'pointer', color: '#888', fontSize: '13px' }}>
         (Change)
