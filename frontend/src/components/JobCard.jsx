@@ -65,7 +65,7 @@ function JobCard({ job, onDelete, onStatusUpdate ,onEdit , onResumeUpload }) {
   {job.resume ? (
     <>
       <a
-        href={`http://localhost:5000/uploads/${job.resume}`}
+        href={`${import.meta.env.VITE_API_URL.replace('/api', '')}/uploads/${job.resume}`}
         target="_blank"
         rel="noreferrer"
         style={{ color: '#4f46e5', fontSize: '14px' }}
