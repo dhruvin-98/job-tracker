@@ -1,19 +1,28 @@
 import { useState, useEffect } from 'react';
 import API from '../api';
 import JobCard from '../components/JobCard';
-import { useNavigate } from 'react-router-dom';
 import EditModal from '../components/EditModal';
+import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 
 function Dashboard() {
   const [jobs, setJobs] = useState([]);
-  const [form, setForm] = useState({ company: '', role: '', status: 'Applied', notes: '',deadline: '', source: '', sourceLink: '' });
+  const [form, setForm] = useState({
+    company: '',
+    role: '',
+    status: 'Applied',
+    notes: '',
+    deadline: '',
+    source: '',
+    sourceLink: ''
+  });
   const [showForm, setShowForm] = useState(false);
+  const [editingJob, setEditingJob] = useState(null);
   const [filterStatus, setFilterStatus] = useState('All');
-const [searchQuery, setSearchQuery] = useState('');
-const [editingJob, setEditingJob] = useState(null);
-
+  const [searchQuery, setSearchQuery] = useState('');
   const name = localStorage.getItem('name');
   const navigate = useNavigate();
+  const { darkMode, toggleDarkMode } = useTheme();
 
   const fetchJobs = async () => {
     try {
@@ -24,19 +33,8 @@ const [editingJob, setEditingJob] = useState(null);
     }
   };
 
-  const handleEdit = async (id, updatedData) => {
-  try {
-    await API.put(`/jobs/${id}`, updatedData);
-    fetchJobs();
-  } catch (err) {
-    console.log(err);
-  }
-  };
   useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchJobs();
-    }, 0);
-    return () => clearTimeout(timer);
+    fetchJobs();
   }, []);
 
   const handleChange = (e) => {
@@ -47,7 +45,7 @@ const [editingJob, setEditingJob] = useState(null);
     e.preventDefault();
     try {
       await API.post('/jobs', form);
-      setForm({ company: '', role: '', status: 'Applied', notes: '' });
+      setForm({ company: '', role: '', status: 'Applied', notes: '', deadline: '', source: '', sourceLink: '' });
       setShowForm(false);
       fetchJobs();
     } catch (err) {
@@ -73,20 +71,27 @@ const [editingJob, setEditingJob] = useState(null);
     }
   };
 
-  const handleResumeUpload = async (id, file) => {
-  const formData = new FormData();
-  formData.append('resume', file);
-  try {
-    await API.post(`/jobs/${id}/resume`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
-    fetchJobs();
+  const handleEdit = async (id, updatedData) => {
+    try {
+      await API.put(`/jobs/${id}`, updatedData);
+      fetchJobs();
     } catch (err) {
       console.log(err);
     }
   };
 
-
+  const handleResumeUpload = async (id, file) => {
+    const formData = new FormData();
+    formData.append('resume', file);
+    try {
+      await API.post(`/jobs/${id}/resume`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      fetchJobs();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -95,11 +100,33 @@ const [editingJob, setEditingJob] = useState(null);
   };
 
   const filteredJobs = jobs
-  .filter(job => filterStatus === 'All' || job.status === filterStatus)
-  .filter(job =>
-    job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    job.role.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+    .filter(job => filterStatus === 'All' || job.status === filterStatus)
+    .filter(job =>
+      job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      job.role.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+  const styles = {
+    container: { minHeight: '100vh', backgroundColor: darkMode ? '#1a1a2e' : '#f4f4f4' },
+    navbar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: darkMode ? '#16213e' : '#4f46e5', padding: '16px 32px' },
+    logo: { color: '#fff', fontSize: '20px' },
+    navRight: { display: 'flex', alignItems: 'center', gap: '16px' },
+    welcome: { color: '#fff', fontSize: '14px' },
+    logoutBtn: { padding: '8px 16px', backgroundColor: '#fff', color: '#4f46e5', border: 'none', borderRadius: '6px', cursor: 'pointer' },
+    themeBtn: { padding: '8px 16px', backgroundColor: 'transparent', color: '#fff', border: '1px solid #fff', borderRadius: '6px', cursor: 'pointer' },
+    stats: { display: 'flex', justifyContent: 'center', gap: '16px', padding: '24px 32px' },
+    statCard: { backgroundColor: darkMode ? '#16213e' : '#fff', color: darkMode ? '#fff' : '#333', padding: '16px 32px', borderRadius: '8px', textAlign: 'center', boxShadow: '0 2px 6px rgba(0,0,0,0.1)' },
+    addSection: { display: 'flex', justifyContent: 'flex-end', padding: '0 32px' },
+    addBtn: { padding: '10px 20px', backgroundColor: '#4f46e5', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px' },
+    formBox: { backgroundColor: darkMode ? '#16213e' : '#fff', margin: '16px 32px', padding: '24px', borderRadius: '8px', boxShadow: '0 2px 6px rgba(0,0,0,0.1)' },
+    input: { width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px', backgroundColor: darkMode ? '#0f3460' : '#fff', color: darkMode ? '#fff' : '#333' },
+    jobList: { padding: '16px 32px' },
+    empty: { textAlign: 'center', color: '#888', marginTop: '40px' },
+    searchFilterRow: { display: 'flex', flexDirection: 'column', gap: '12px', padding: '16px 32px' },
+    searchInput: { padding: '10px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px', width: '100%', backgroundColor: darkMode ? '#0f3460' : '#fff', color: darkMode ? '#fff' : '#333' },
+    filterButtons: { display: 'flex', gap: '8px', flexWrap: 'wrap' },
+    filterBtn: { padding: '8px 16px', borderRadius: '20px', border: '1px solid #ddd', cursor: 'pointer', fontSize: '13px' },
+  };
 
   return (
     <div style={styles.container}>
@@ -109,6 +136,9 @@ const [editingJob, setEditingJob] = useState(null);
         <h2 style={styles.logo}>Job Tracker</h2>
         <div style={styles.navRight}>
           <span style={styles.welcome}>Hi, {name}</span>
+          <button style={styles.themeBtn} onClick={toggleDarkMode}>
+            {darkMode ? '☀️ Light' : '🌙 Dark'}
+          </button>
           <button style={styles.logoutBtn} onClick={handleLogout}>Logout</button>
         </div>
       </div>
@@ -130,6 +160,49 @@ const [editingJob, setEditingJob] = useState(null);
         </button>
       </div>
 
+      {/* Add Job Form */}
+      {showForm && (
+        <div style={styles.formBox}>
+          <form onSubmit={handleSubmit}>
+            <input style={styles.input} name="company" placeholder="Company" value={form.company} onChange={handleChange} required />
+            <input style={styles.input} name="role" placeholder="Role" value={form.role} onChange={handleChange} required />
+            <select style={styles.input} name="status" value={form.status} onChange={handleChange}>
+              <option>Applied</option>
+              <option>Interview</option>
+              <option>Offer</option>
+              <option>Rejected</option>
+            </select>
+            <textarea style={styles.input} name="notes" placeholder="Notes (optional)" value={form.notes} onChange={handleChange} />
+            <label style={{ fontSize: '13px', color: darkMode ? '#ccc' : '#555' }}>Follow-up Deadline (optional)</label>
+            <input
+              style={{ ...styles.input, marginTop: '4px' }}
+              type="date"
+              name="deadline"
+              value={form.deadline}
+              onChange={handleChange}
+            />
+            <select style={styles.input} name="source" value={form.source} onChange={handleChange}>
+              <option value="">-- Where did you apply? --</option>
+              <option>LinkedIn</option>
+              <option>Indeed</option>
+              <option>Glassdoor</option>
+              <option>Naukri</option>
+              <option>Company Website</option>
+              <option>Referral</option>
+              <option>Other</option>
+            </select>
+            <input
+              style={styles.input}
+              type="url"
+              name="sourceLink"
+              placeholder="Job posting link (optional)"
+              value={form.sourceLink}
+              onChange={handleChange}
+            />
+            <button style={styles.addBtn} type="submit">Save Job</button>
+          </form>
+        </div>
+      )}
 
       {/* Search and Filter */}
       <div style={styles.searchFilterRow}>
@@ -146,8 +219,8 @@ const [editingJob, setEditingJob] = useState(null);
               key={status}
               style={{
                 ...styles.filterBtn,
-                backgroundColor: filterStatus === status ? '#4f46e5' : '#fff',
-                color: filterStatus === status ? '#fff' : '#333'
+                backgroundColor: filterStatus === status ? '#4f46e5' : darkMode ? '#16213e' : '#fff',
+                color: filterStatus === status ? '#fff' : darkMode ? '#fff' : '#333'
               }}
               onClick={() => setFilterStatus(status)}
             >
@@ -155,61 +228,12 @@ const [editingJob, setEditingJob] = useState(null);
             </button>
           ))}
         </div>
-      </div> 
-
-      {/* Add Job Form */}
-      {showForm && (
-        <div style={styles.formBox}>
-          <form onSubmit={handleSubmit}>
-            <input style={styles.input} name="company" placeholder="Company" value={form.company} onChange={handleChange} required />
-            <input style={styles.input} name="role" placeholder="Role" value={form.role} onChange={handleChange} required />
-            <select style={styles.input} name="status" value={form.status} onChange={handleChange}>
-              <option>Applied</option>
-              <option>Interview</option>
-              <option>Offer</option>
-              <option>Rejected</option>
-            </select>
-            <textarea style={styles.input} name="notes" placeholder="Notes (optional)" value={form.notes} onChange={handleChange} />
-
-             <label style={{ fontSize: '13px', color: '#555' }}>Follow-up Deadline (optional)</label>
-              <input
-                style={{ ...styles.input, marginTop: '4px' }}
-                type="date"
-                name="deadline"
-                value={form.deadline}
-                onChange={handleChange}
-              />
-
-            <select style={styles.input} name="source" value={form.source} onChange={handleChange}>
-                <option value="">-- Where did you apply? --</option>
-                <option>LinkedIn</option>
-                <option>Indeed</option>
-                <option>Glassdoor</option>
-                <option>Naukri</option>
-                <option>Company Website</option>
-                <option>Referral</option>
-                <option>Other</option>
-            </select>
-
-              <input
-                style={styles.input}
-                type="url"
-                name="sourceLink"
-                placeholder="Job posting link (optional)"
-                value={form.sourceLink}
-                onChange={handleChange}
-              />
-
-
-            <button style={styles.addBtn} type="submit">Save Job</button>
-          </form>
-        </div>
-      )}
+      </div>
 
       {/* Job Cards */}
       <div style={styles.jobList}>
         {filteredJobs.length === 0
-          ? <p style={styles.empty}>No jobs added yet. Click "+ Add Job" to start.</p>
+          ? <p style={styles.empty}>No jobs found.</p>
           : filteredJobs.map(job => (
             <JobCard
               key={job._id}
@@ -222,37 +246,18 @@ const [editingJob, setEditingJob] = useState(null);
           ))
         }
       </div>
-    {editingJob && (
-      <EditModal
-        job={editingJob}
-        onClose={() => setEditingJob(null)}
-        onSave={handleEdit}
-      />
-    )}
+
+      {/* Edit Modal */}
+      {editingJob && (
+        <EditModal
+          job={editingJob}
+          onClose={() => setEditingJob(null)}
+          onSave={handleEdit}
+        />
+      )}
+
     </div>
   );
 }
-
-const styles = {
-  container: { minHeight: '100vh', backgroundColor: '#f4f4f4' },
-  navbar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#4f46e5', padding: '16px 32px' },
-  logo: { color: '#fff', fontSize: '20px' },
-  navRight: { display: 'flex', alignItems: 'center', gap: '16px' },
-  welcome: { color: '#fff', fontSize: '14px' },
-  logoutBtn: { padding: '8px 16px', backgroundColor: '#fff', color: '#4f46e5', border: 'none', borderRadius: '6px', cursor: 'pointer' },
-  stats: { display: 'flex', justifyContent: 'center', gap: '16px', padding: '24px 32px' },
-  statCard: { backgroundColor: '#fff', padding: '16px 32px', borderRadius: '8px', textAlign: 'center', boxShadow: '0 2px 6px rgba(0,0,0,0.1)' },
-  addSection: { display: 'flex', justifyContent: 'flex-end', padding: '0 32px' },
-  addBtn: { padding: '10px 20px', backgroundColor: '#4f46e5', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px' },
-  formBox: { backgroundColor: '#fff', margin: '16px 32px', padding: '24px', borderRadius: '8px', boxShadow: '0 2px 6px rgba(0,0,0,0.1)' },
-  input: { width: '100%', padding: '10px', marginBottom: '12px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px' },
-  jobList: { padding: '16px 32px' },
-  empty: { textAlign: 'center', color: '#888', marginTop: '40px' },
-  searchFilterRow: { display: 'flex', flexDirection: 'column', gap: '12px', padding: '16px 32px' },
-searchInput: { padding: '10px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px', width: '100%' },
-filterButtons: { display: 'flex', gap: '8px', flexWrap: 'wrap' },
-filterBtn: { padding: '8px 16px', borderRadius: '20px', border: '1px solid #ddd', cursor: 'pointer', fontSize: '13px' },
-  
-};
 
 export default Dashboard;
